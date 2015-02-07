@@ -1,4 +1,4 @@
-#!/usr/local/bin/lua
+#!/usr/bin/lua
 
 --- Deploy component instances on a host --
 local Deploy = {}
@@ -19,15 +19,15 @@ end
 function Deploy:main(arg)
 
   -- determine the parameters
-  local host, component, instances = arg[1], arg[2], tonumber(arg[3]) or 1
+  local host, component, instances = arg[1], arg[2], tonumber(arg[3] or 1)
   if not ('string' == type(host) and 
         'string' == type(component) and 
         'number' == type(instances)) then
     print(arg[0], self.USAGE)
+  else
+    -- launch 
+    self:launch(host, component, instances)
   end
-
-  -- launch 
-  self:launch(host, component, instances)
 end
 
 Deploy:main(arg)
