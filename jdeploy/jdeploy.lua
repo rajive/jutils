@@ -12,8 +12,20 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-
---- Deploy a given component on a given host
+--------------------------------------------------------------------------------
+-- PURPOSE
+--    Load deployment configurations from an external file.
+--    Launch the specified given component on the specified host
+--
+-- USAGE:
+--    jdeploy.lua <host> <component>   
+--      or
+--    jdeploy     <host> <component>
+--     
+-- EXAMPLES:
+--    See jconfig.lua for examples
+--------------------------------------------------------------------------------
+--- Deploy - deployment utility class    
 local Deploy = {
   USAGE= [[
 <host> <component> [<file>] [<config>]

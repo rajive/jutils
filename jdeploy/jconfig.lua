@@ -1,7 +1,38 @@
--- Example Deployment Configuration File
---    By default, the last configration in this file is the one used
-
------------------------------------------------------------------
+-- Copyright (C) 2015 Rajive Joshi
+--
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--   http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+--------------------------------------------------------------------------------
+-- PURPOSE
+--    For use with [jdeploy](https://github.com/rajive/jutils)
+--    
+--    Example Deployment Configuration File
+--      By default, the last configration in this file is the one used
+--   
+-- USAGE:
+--    jdeploy     <host> <component>
+--        or
+--    jdeploy.lua <host> <component>   
+--     
+-- EXAMPLES:
+-- 
+--  Using the default config (last one loaded)
+--    jdeploy localhost env
+--    jdeploy earth ls
+--    jdeploy tmux demo1
+--
+--  Using the config: example1
+--    jdeploy earth ls ./jconfig.lua example1
+--------------------------------------------------------------------------------
 -- Simple Examples
 
 jconfig {
@@ -79,7 +110,7 @@ jconfig {
   },
 }
 
------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Advanced Example
 --
 -- The config is executable Lua code. jconfig() is actually a Lua
@@ -175,5 +206,4 @@ local demo = jconfig {
     }
   }, { __index = app.components}),
 }
--- USAGE
---    lua jdeploy.lua tmux demo1
+--------------------------------------------------------------------------------
