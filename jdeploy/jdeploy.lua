@@ -15,7 +15,7 @@
 --------------------------------------------------------------------------------
 -- PURPOSE
 --    Load deployment configurations from an external file.
---    Launch the specified given component on the specified host
+--    Launch the specified given component on the specified host.
 --
 -- USAGE:
 --    jdeploy.lua <host> <component>   
@@ -33,7 +33,9 @@ local Deploy = {
 where
   <host>       = deployment host name or address
   <component>  = name of the component to launch
-  [<file>]     = deployment config file (default = ./jconfig.lua)
+  [<file>]     = deployment config file
+                    default = ./jconfig.lua           (if it exists, else) 
+                              $HOME/.jconfig.lua
   [<config>]   = config name (default = last config loaded from the file)
   
           Config File Format
@@ -152,6 +154,19 @@ function jconfig(config)
   return config
 end
 
+--- file_readable
+-- Check if a file exists and is readable
+-- @return the file name ifthe file is readable; nil otherwise
+function Deploy.file_readable(name)
+  local f = io.open(name,"r")
+  if nil~=f then 
+    io.close(f) 
+    return name 
+  else 
+    return nil
+  end
+end
+
 --- main
 -- Check command line parameters, load config file, and launch 
 function Deploy:main(arg)
@@ -164,7 +179,14 @@ function Deploy:main(arg)
   end
 
   -- load config file
-  local file = arg[3] or './jconfig.lua'
+  local file = (arg[3] and Deploy.file_readable(arg[3])) or
+               Deploy.file_readable('./jconfig.lua') or
+               Deploy.file_readable(os.getenv('HOME')..'/.jconfig.lua')
+  if not file then
+    print('config file not readable ', arg[3] or '', 
+                './jconfig.lua', os.getenv('HOME')..'/.jconfig.lua')
+    return
+  end
   print('Loading configuration file', file)
   dofile(file)
 
