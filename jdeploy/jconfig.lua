@@ -1,6 +1,8 @@
 -- Example Deployment Configuration File
 --    It contains two deployment configuration
 --    The last configration in this file is the default one
+-- NOTE: jconfig returns the just loaded config; the return value
+--       may be used to create composite configs
 
 jconfig {
   name = 'example1',

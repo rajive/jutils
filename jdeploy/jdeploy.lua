@@ -130,11 +130,14 @@ function Deploy:launch(host, component, config)
 end
 
 --- jconfig (Global Function)
--- Load a configuration (from a file)
+-- Load a configuration
+-- Typically invoked when loading configurations from a file via dofile()
+-- @return the just loaded config
 function jconfig(config)
   print('      loaded configuration  ', config.name)
   Deploy.configs[config.name] = config
   Deploy.default_config = config
+  return config
 end
 
 --- main
