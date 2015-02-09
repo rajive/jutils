@@ -1,4 +1,4 @@
-#!/usr/bin/lua
+#!/usr/bin/env lua
 -- Copyright (C) 2015 Rajive Joshi
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
