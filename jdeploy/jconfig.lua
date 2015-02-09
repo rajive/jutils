@@ -199,10 +199,10 @@ local demo = jconfig {
     demo1 = { -- use jdeploy to launch components on various hosts
       exec = [[
         tmux -2 new-session -d -s demo;
-          tmux new-window -t demo:1 -n demo1;
+          tmux new-window -t demo:2 -n demo1;
           tmux split-window -h -p $((100/2)); 
-          tmux select-pane -t 0; tmux send-keys "./jdeploy.lua localhost ls" C-m;
-          tmux select-pane -t 1; tmux send-keys "./jdeploy.lua localhost env" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy localhost ls" C-m;
+          tmux select-pane -t 2; tmux send-keys "./jdeploy localhost env" C-m;
         tmux attach -t demo;
       ]],
     },
@@ -210,10 +210,10 @@ local demo = jconfig {
     demo2 = { -- use jdeploy to launch components on various hosts
       exec = [[
         tmux -2 new-session -d -s demo;
-          tmux new-window -t demo:2 -n demo2;
+          tmux new-window -t demo:3 -n demo2;
           tmux split-window -h -p $((100/2)); 
-          tmux select-pane -t 0; tmux send-keys "tail -f /var/log/syslog" C-m;
-          tmux select-pane -t 1; tmux send-keys "./jdeploy.lua localhost ls" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy earth ls" C-m;
+          tmux select-pane -t 2; tmux send-keys "./jdeploy earth ls" C-m;
         tmux attach -t demo;
       ]],
     },
