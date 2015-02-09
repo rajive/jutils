@@ -15,7 +15,7 @@
 -- PURPOSE
 --  For use with [jdeploy](https://github.com/rajive/jutils)
 --    
---  Example Deployment Configuration File
+--  Sample Deployment Configuration File
 --  
 --  If no configuration is explicitly specified on the 'jdeploy' command line, 
 --  the last configuration in the file is used (default configuration).
@@ -186,27 +186,37 @@ local demo = jconfig {
   
   hosts = setmetatable({
     tmux = {
-      login = app.hosts.earth.login,
+      -- login = app.hosts.earth.login,
       
       -- default commands to execute upon login, unless otherwise specified
-      exec = [[cd ~/Code/my/jutils/jdeploy;]],
+      exec = [[
+        cd ~/Code/my/jutils/jdeploy;
+      ]],
     }
   }, { __index = app.hosts}),
   
   components = setmetatable({
     demo1 = { -- use jdeploy to launch components on various hosts
       exec = [[
-        lua jdeploy.lua localhost ls &
-        lua jdeploy.lua localhost env &
-      ]]
+        tmux -2 new-session -d -s demo;
+          tmux new-window -t demo:1 -n demo1;
+          tmux split-window -h -p $((100/2)); 
+          tmux select-pane -t 0; tmux send-keys "./jdeploy.lua localhost ls" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy.lua localhost env" C-m;
+        tmux attach -t demo;
+      ]],
     },
     
     demo2 = { -- use jdeploy to launch components on various hosts
       exec = [[
-        lua jdeploy.lua localhost env &
-        lua jdeploy.lua localhost ls &
-      ]]
-    }
+        tmux -2 new-session -d -s demo;
+          tmux new-window -t demo:2 -n demo2;
+          tmux split-window -h -p $((100/2)); 
+          tmux select-pane -t 0; tmux send-keys "tail -f /var/log/syslog" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy.lua localhost ls" C-m;
+        tmux attach -t demo;
+      ]],
+    },
   }, { __index = app.components}),
 }
 --------------------------------------------------------------------------------
