@@ -13,18 +13,21 @@
 -- limitations under the License.
 --------------------------------------------------------------------------------
 -- PURPOSE
---    For use with [jdeploy](https://github.com/rajive/jutils)
+--  For use with [jdeploy](https://github.com/rajive/jutils)
 --    
---    Example Deployment Configuration File
---      By default, the last configration in this file is the one used
+--  Example Deployment Configuration File
+--  
+--  If no configuration is explicitly specified on the 'jdeploy' command line, 
+--  the last configuration in the file is used (default configuration).
 --   
 -- USAGE:
---    jdeploy     <host> <component>
+--  Put the 'jdeploy' utility script in the PATH 
+--  
+--  jdeploy     <host> <component>
 --        or
---    jdeploy.lua <host> <component>   
+--  jdeploy.lua <host> <component>   
 --     
 -- EXAMPLES:
--- 
 --  Using the default config (last one loaded)
 --    jdeploy localhost env
 --    jdeploy earth ls

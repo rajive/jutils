@@ -13,21 +13,29 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --------------------------------------------------------------------------------
--- PURPOSE
---    Load deployment configurations from an external file.
---    Launch the specified given component on the specified host.
+-- PURPOSE:
+--  Load deployment configurations from the first readable config file,
+--  checked in the following order:
+--        <the file specified on the command line, if any>
+--        jconfig.lua in the current working directory
+--            $HOME/.jconfig.lua 
+--    
+--  Using the specified configuration (by default, the last configuration),
+--  launch the specified component on the specified host.
 --
 -- USAGE:
---    jdeploy.lua <host> <component>   
+--  Put this 'jdeploy' utility script in the PATH 
+--  
+--  jdeploy.lua <host> <component>   
 --      or
---    jdeploy     <host> <component>
+--  jdeploy     <host> <component>
 --     
 -- EXAMPLES:
---    See jconfig.lua for examples
+--  See jconfig.lua for examples
 --------------------------------------------------------------------------------
 --- Deploy - deployment utility class    
 local Deploy = {
-  USAGE= [[
+  USAGE = [[
 <host> <component> [<file>] [<config>]
 
 where
@@ -159,7 +167,7 @@ end
 -- @return the file name ifthe file is readable; nil otherwise
 function Deploy.file_readable(name)
   local f = io.open(name,"r")
-  if nil~=f then 
+  if nil ~= f then 
     io.close(f) 
     return name 
   else 
