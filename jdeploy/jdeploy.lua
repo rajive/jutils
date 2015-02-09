@@ -163,7 +163,7 @@ function Deploy:main(arg)
     print('config', name, 'not defined in config file', file)
     return
   end
-  print('Using configuration         ', config.name)
+  print('Using', config.name, 'configuration')
     
   -- launch 
   self:launch(host, component, config)
