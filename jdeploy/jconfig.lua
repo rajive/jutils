@@ -1,4 +1,6 @@
 -- Example Deployment Configuration File
+--    It contains two deployment configuration
+--    The last configration in this file is the default one
 
 jconfig {
   name = 'example1',
