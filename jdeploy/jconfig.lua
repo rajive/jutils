@@ -27,7 +27,7 @@
 --        or
 --  jdeploy.lua <host> <component>   
 --  
---  The 'exec' commands should be valid Bourne shell (sh) snippets. For best
+--  The 'exec' commands should be valid Bourne Shell (sh) snippets. For best
 --  results:
 --      - separate each command by a semicolon (;)
 --      - escape multi-line commands by the backspace character (\)
@@ -60,10 +60,7 @@ jconfig {
   components = {
     shell = {
       -- default commands to execute, unless otherwise specified
-      exec = [[]],
-      
-      -- host specific commands to execute, instead of 'exec'
-      shell = [[bash -login]],
+      exec = [[bash --login;]],
     },
   },
 }
@@ -86,9 +83,6 @@ jconfig {
         export B=b;
         cd ~/Code;
       ]],
-      
-      -- component specific commands to execute upon login, instead of 'exec'
-      shell = [[]],
     },
     
     localhost = {
@@ -103,10 +97,7 @@ jconfig {
   components = {
     shell = {
       -- default commands to execute, unless otherwise specified
-      exec = [[]],
-      
-      -- host specific commands to execute, instead of 'exec'
-      localhost = [[bash -login;]],
+      exec = [[bash --login;]],
     },
     
     env = {
@@ -139,16 +130,13 @@ local sys = jconfig {
     localhost = {
       -- default commands to execute upon login, unless otherwise specified
       exec = [[]],
-      
-      -- component specific commands to execute upon login, instead of 'exec'
-      shell = [[bash -login;]],
     },
   },
 
   components = {    
     shell = {
       -- default commands to execute, unless otherwise specified
-      exec = [[]],
+      exec = [[bash --login;]],
     },
     
     env = {
@@ -175,9 +163,6 @@ local app = jconfig {
         export B=b;
         cd ~/Code/my/jutils/jdeploy;
       ]],
-      
-      -- component specific commands to execute upon login, instead of 'exec'
-      shell = [[]],
     },  
   }, { __index = sys.hosts}),
   
@@ -193,7 +178,7 @@ local demo = jconfig {
   name = [[demo]],
   
   hosts = setmetatable({
-    tmux =  app.hosts.localhost, -- alias for another host
+    tmux =  app.hosts.earth, -- alias for another host
   }, { __index = app.hosts}),
   
   components = setmetatable({
@@ -201,8 +186,8 @@ local demo = jconfig {
       exec = [[
         tmux -2 new-session -d -s demo;
          tmux new-window -t demo:1 -n demo1; tmux split-window -h -p $((100/2)); 
-          tmux select-pane -t 1; tmux send-keys "./jdeploy localhost ls" C-m;
-          tmux select-pane -t 2; tmux send-keys "./jdeploy localhost env" C-m;
+          tmux select-pane -t 0; tmux send-keys "./jdeploy localhost ls" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy localhost env" C-m;
         tmux attach -t demo;
       ]],
     },
@@ -211,8 +196,8 @@ local demo = jconfig {
       exec = [[
         tmux -2 new-session -d -s demo;
          tmux new-window -t demo:2 -n demo2; tmux split-window -v -p $((100/2)); 
-          tmux select-pane -t 1; tmux send-keys "./jdeploy earth ls" C-m;
-          tmux select-pane -t 2; tmux send-keys "./jdeploy earth ls" C-m;
+          tmux select-pane -t 0; tmux send-keys "./jdeploy earth ls" C-m;
+          tmux select-pane -t 1; tmux send-keys "./jdeploy earth env" C-m;
         tmux attach -t demo;
       ]],
     },

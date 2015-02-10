@@ -111,7 +111,7 @@ Deploy.methods = {
   ssh = function(host, component)
     local cmd = table.concat{
       'ssh ', host.login.user, '@', host.login.addr, ' ',
-      "'", 
+      "-t '", -- force pseudo-tty allocation 
       -- host initialization: component specific or generic (default)
       host[component.name] or host.exec or '', 
       -- the component execution: host specific or generic (default)
