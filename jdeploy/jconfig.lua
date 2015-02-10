@@ -26,6 +26,12 @@
 --  jdeploy     <host> <component>
 --        or
 --  jdeploy.lua <host> <component>   
+--  
+--  The 'exec' commands should be valid Bourne shell (sh) snippets. For best
+--  results:
+--      - separate each command by a semicolon (;)
+--      - escape multi-line commands by the backspace character (\)
+--      - use the Lua string [[ ]] syntax to that ' and " are for sh commands
 --     
 -- EXAMPLES:
 --  Using the default config (last one loaded)
@@ -39,7 +45,7 @@
 -- Simple Examples
 
 jconfig {
-  name = 'example1',
+  name = [[example1]],
   
   hosts = {
     localhost = {
@@ -47,7 +53,6 @@ jconfig {
       exec = [[
         export A=a;
         export B=b;
-        env;
       ]],
     },
   },
@@ -58,21 +63,21 @@ jconfig {
       exec = [[]],
       
       -- host specific commands to execute, instead of 'exec'
-      localhost = [[bash -login]],
+      shell = [[bash -login]],
     },
   },
 }
 
 
 jconfig {
-  name = 'example2',
+  name = [[example2]],
   
   hosts = {
     earth = {
       login = { -- may skip this attribute for localhost
-        addr   = '192.168.89.27',
-        user   = 'rajive',
-        method = 'ssh'
+        addr   = [[192.168.89.27]],
+        user   = [[rajive]],
+        method = [[ssh]],
       },
       
       -- default commands to execute upon login, unless otherwise specified
@@ -80,7 +85,6 @@ jconfig {
         export A=a;
         export B=b;
         cd ~/Code;
-        env;
       ]],
       
       -- component specific commands to execute upon login, instead of 'exec'
@@ -92,7 +96,6 @@ jconfig {
       exec = [[
         export A=a;
         export B=b;
-        env;
       ]],
     },
   },
@@ -103,12 +106,17 @@ jconfig {
       exec = [[]],
       
       -- host specific commands to execute, instead of 'exec'
-      localhost = [[bash -login]],
+      localhost = [[bash -login;]],
+    },
+    
+    env = {
+      -- default commands to execute, unless otherwise specified
+      exec = [[env;]],
     },
     
     ls = {
       -- default commands to execute, unless otherwise specified
-      exec = [[ls -lF]],
+      exec = [[ls -lF;]],
     },
   },
 }
@@ -125,12 +133,15 @@ jconfig {
 --    sys --> app --> demo
 --
 local sys = jconfig {
-  name = 'sys',
+  name = [[sys]],
   
   hosts = {
     localhost = {
       -- default commands to execute upon login, unless otherwise specified
       exec = [[]],
+      
+      -- component specific commands to execute upon login, instead of 'exec'
+      shell = [[bash -login;]],
     },
   },
 
@@ -138,34 +149,31 @@ local sys = jconfig {
     shell = {
       -- default commands to execute, unless otherwise specified
       exec = [[]],
-      
-      -- host specific commands to execute, instead of 'exec'
-      localhost = [[bash -login]],
     },
     
     env = {
       -- default commands to execute, unless otherwise specified
-      exec = [[env]]
+      exec = [[env;]]
     },
   }
 }
 
 local app = jconfig {
-  name = "app",
+  name = [[app]],
   
   hosts = setmetatable({
     earth = {
       login = { -- may skip this attribute for localhost
-        addr   = '192.168.89.27',
-        user   = 'rajive',
-        method = 'ssh'
+        addr   = [[192.168.89.27]],
+        user   = [[rajive]],
+        method = [[ssh]],
       },
       
       -- default commands to execute upon login, unless otherwise specified
       exec = [[
         export A=a;
         export B=b;
-        cd ~/Code;
+        cd ~/Code/my/jutils/jdeploy;
       ]],
       
       -- component specific commands to execute upon login, instead of 'exec'
@@ -176,30 +184,23 @@ local app = jconfig {
   components = setmetatable({
     ls = {
       -- default commands to execute, unless otherwise specified
-      exec = [[ls -lF]],
+      exec = [[ls -lF;]],
     },
   }, { __index = sys.components}),
 }
 
 local demo = jconfig {
-  name = "demo",
+  name = [[demo]],
   
   hosts = setmetatable({
-    tmux = {
-      login = app.hosts.localhost.login,
-      
-      -- default commands to execute upon login, unless otherwise specified
-      exec = [[
-        cd ~/Code/my/jutils/jdeploy;
-      ]],
-    }
+    tmux =  app.hosts.localhost, -- alias for another host
   }, { __index = app.hosts}),
   
   components = setmetatable({
     demo1 = { -- use jdeploy to launch components on various hosts
       exec = [[
         tmux -2 new-session -d -s demo;
-         tmux new-window -t demo:2 -n demo1; tmux split-window -h -p $((100/2)); 
+         tmux new-window -t demo:1 -n demo1; tmux split-window -h -p $((100/2)); 
           tmux select-pane -t 1; tmux send-keys "./jdeploy localhost ls" C-m;
           tmux select-pane -t 2; tmux send-keys "./jdeploy localhost env" C-m;
         tmux attach -t demo;
@@ -209,11 +210,19 @@ local demo = jconfig {
     demo2 = { -- use jdeploy to launch components on various hosts
       exec = [[
         tmux -2 new-session -d -s demo;
-         tmux new-window -t demo:3 -n demo2; tmux split-window -h -p $((100/2)); 
+         tmux new-window -t demo:2 -n demo2; tmux split-window -v -p $((100/2)); 
           tmux select-pane -t 1; tmux send-keys "./jdeploy earth ls" C-m;
           tmux select-pane -t 2; tmux send-keys "./jdeploy earth ls" C-m;
         tmux attach -t demo;
       ]],
+    },
+    
+    attach = {
+      exec = [[tmux attach -t demo;]],
+    },
+    
+    kill = {
+      exec = [[tmux kill-session; tmux list-sessions;]],
     },
   }, { __index = app.components}),
 }

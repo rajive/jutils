@@ -95,29 +95,28 @@ jconfig {
 --            new_method_name = function(host, component)
 --
 Deploy.methods = {
-  ssh = function(host, component)
-    local cmd = table.concat{
-      'ssh ', host.login.user, '@', host.login.addr, 
-        " '", 
-        -- host initialization: component specific or generic (default)
-        host[component.name] or host.exec or '', 
-        -- the component execution: host specific or generic (default)
-        component[host.name] or component.exec or '', 
-        "'"
+  sh = function(host, component)
+    local cmd = table.concat{ 
+      "sh -c '", 
+      -- host initialization: component specific or generic (default)
+      host[component.name] or host.exec or '', 
+      -- the component execution: host specific or generic (default)
+      component[host.name] or component.exec or '', 
+      "'"
     }
     print('Launching  ', component.name, '  on host  ', host.name, '\n', cmd)
     os.execute(cmd)
   end,
-
-  sh = function(host, component)
+  
+  ssh = function(host, component)
     local cmd = table.concat{
-      'sh -c', 
-        " '", 
-        -- host initialization: component specific or generic (default)
-        host[component.name] or host.exec or '', 
-        -- the component execution: host specific or generic (default)
-        component[host.name] or component.exec or '', 
-        "'"
+      'ssh ', host.login.user, '@', host.login.addr, ' ',
+      "'", 
+      -- host initialization: component specific or generic (default)
+      host[component.name] or host.exec or '', 
+      -- the component execution: host specific or generic (default)
+      component[host.name] or component.exec or '', 
+      "'"
     }
     print('Launching  ', component.name, '  on host  ', host.name, '\n', cmd)
     os.execute(cmd)
@@ -156,9 +155,22 @@ end
 -- Typically invoked when loading configurations from a file via dofile()
 -- @return the just loaded config
 function jconfig(config)
-  print('      loaded configuration  ', config.name)
+
+  -- check if it is a valid config ---
+  if 'table' ~= type(config) or
+     'string' ~= type(config.name) or
+     'table' ~= type(config.hosts) or
+     'table' ~= type(config.components) then
+     
+    print('     invalid configuration  ', config.name, 'SKIPPING')
+    return nil
+  end
+  
+  -- accept valid config ---
   Deploy.configs[config.name] = config
   Deploy.default_config = config
+  print('      loaded configuration  ', config.name)
+  
   return config
 end
 
