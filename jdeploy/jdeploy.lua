@@ -36,15 +36,16 @@
 --- Deploy - deployment utility class    
 local Deploy = {
   USAGE = [[
-<host> <component> [<file>] [<config>]
+<host> <component> [<config>] [<file>] 
 
 where
   <host>       = deployment host name or address
   <component>  = name of the component to launch
+  [<config>]   = config name (default = last config loaded from the file)
   [<file>]     = deployment config file
                     default = ./jconfig.lua           (if it exists, else) 
                               $HOME/.jconfig.lua
-  [<config>]   = config name (default = last config loaded from the file)
+
   
           Config File Format
 
@@ -199,7 +200,7 @@ function Deploy:main(arg)
   end
 
   -- load config file
-  local file = (arg[3] and Deploy.file_readable(arg[3])) or
+  local file = (arg[4] and Deploy.file_readable(arg[4])) or
                Deploy.file_readable('./jconfig.lua') or
                Deploy.file_readable(os.getenv('HOME')..'/.jconfig.lua')
   if not file then
@@ -211,7 +212,7 @@ function Deploy:main(arg)
   dofile(file)
 
   -- default config
-  local name = arg[4] or self.default_config.name
+  local name = arg[3] or self.default_config.name
   local config = self.configs[name]
   if not config then
     print('config', name, 'not defined in config file', file)
